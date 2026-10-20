@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Random Browser</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--text:#1d1d1b;--muted:#6b6a64;--accent:#d9480f;--border:#e3e0d8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#161615;--card:#212120;--text:#f0eee8;--muted:#9b998f;--accent:#ff8a4c;--border:#34332f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#161615;--card:#212120;--text:#f0eee8;--muted:#9b998f;--accent:#ff8a4c;--border:#34332f;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+main{max-width:640px;margin:0 auto;padding:32px 20px 48px}
+h1{font-size:1.6rem;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 24px}
+.bar{display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:999px;padding:8px 8px 8px 18px;margin-bottom:16px}
+.bar span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:.95rem}
+button,a.btn{font:inherit;cursor:pointer;border:0;border-radius:999px;padding:10px 18px;background:var(--accent);color:#fff;text-decoration:none;display:inline-block}
+button.alt,a.alt{background:transparent;color:var(--text);border:1px solid var(--border)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;min-height:200px}
+.tag{display:inline-block;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:8px}
+.card h2{margin:0 0 8px;font-size:1.4rem}
+.card p{margin:0 0 20px;color:var(--muted)}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}
+.chip{padding:6px 14px;font-size:.85rem}
+.chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+h3{font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:28px 0 8px}
+ul{list-style:none;margin:0;padding:0}
+li a{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);color:var(--text);text-decoration:none}
+li a small{color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+<h1>Random Browser</h1>
+<p class="sub">Press the button and land somewhere new on the web.</p>
+<div class="bar"><span id="url">Ready when you are…</span><button id="go">Surprise me</button></div>
+<div class="filters" id="filters"></div>
+<div class="card" id="card">
+  <span class="tag">Welcome</span>
+  <h2>Where to?</h2>
+  <p>Every click picks a hand-picked corner of the internet: tools, toys, learning, art and oddities. Pick a category above to narrow it down.</p>
+</div>
+<h3>Recently visited</h3>
+<ul id="hist"><li><small>Nothing yet.</small></li></ul>
+</main>
+<script>
+const SITES=[
+["Wikipedia","https://en.wikipedia.org/wiki/Special:Random","Learn","A random article from the free encyclopedia."],
+["Radio Garden","https://radio.garden","Music","Spin a globe and listen to live radio from anywhere."],
+["The Pudding","https://pudding.cool","Read","Visual essays about culture and data."],
+["Chatgpt","https://chat.openai.com","Learn","Talk to an AI about anything."],
+["Claude", "https://claude.ai/","inquire","Talk with an expert in all field"],
+["Neal.fun","https://neal.fun","Play","Playful interactive experiments and tiny games."],
+["Windy","https://www.windy.com","Explore","Animated live map of wind, waves and weather."],
+["Public Domain Review","https://publicdomainreview.org","Art","Curated oddities from the public domain."],
+["Hacker News","https://news.ycombinator.com","Read","Tech and startup links from a curious crowd."],
+["Qoder","https://www.google.com/aclk?sa=L&pf=1&ai=DChsSEwiG_-3PiMmXAxVEo1AGHXpGPEcYACICCAEQARoCZGc&co=1&ase=2&gclid=CjwKCAjwotzWBhBFEiwA1JhPoBQJjp57Q7JFkNfQm8pKEanQaiTIqnnKAlI-3ix6uh1CAfoxqp4REBoCCLgQAvD_BwE&cid=CAASuwHkaL1rTaKE6yfuBopxnK3QS158o6iPQdliBOCt6bgXtVdA4Ja7O6Gr8tR3ZxA5j6cU8QLdJNDpBrOTB-GoO7g4qNWVyMiZaD2fHTxl-R08uUZkfVubtFMRr8I_-Vbga8s5eiCz7IEk1d4rE-R_FZmqInVGIi6MouYlzoJ1Hp4Rjr79CvrbFOIrXvDtIeB7uQH8RH6iNr6kdBfiTvhnJQ3gqPmkgTBIiK6z_iSejrB8RWjfBHR8-vVmzkRT&cce=2&category=acrcp_v1_32&sig=AOD64_2AZe2zNSJ3zNh7AqOPrZ-_EzN5vg&q&nis=4&adurl=https://qoder.com/?utm_source%3Dpaid%26utm_medium%3Dgg_sem%26utm_campaign%3Dcredits%26gad_source%3D1%26gad_campaignid%3D24259343514%26gbraid%3D0AAAABBR1EZ9n9ZyTjQKITesFti10e-jLQ%26gclid%3DCjwKCAjwotzWBhBFEiwA1JhPoBQJjp57Q7JFkNfQm8pKEanQaiTIqnnKAlI-3ix6uh1CAfoxqp4REBoCCLgQAvD_BwE&ved=2ahUKEwie4-bPiMmXAxW4W0EAHTQ2JAMQ0Qx6BAgaEAE","Build","Build from idea"],
+["Teamily ai","https://www.google.com/aclk?sa=L&ai=DChsSEwiG_-3PiMmXAxVEo1AGHXpGPEcYACICCAEQAhoCZGc&co=1&ase=2&gclid=CjwKCAjwotzWBhBFEiwA1JhPoPhnhbQmTeYE1IrqTXnH-vxzSOnL7o8NyIJc4Tsx3yQAyLUu5A9-nBoCjJwQAvD_BwE&cid=CAASuwHkaL1rTaKE6yfuBopxnK3QS158o6iPQdliBOCt6bgXtVdA4Ja7O6Gr8tR3ZxA5j6cU8QLdJNDpBrOTB-GoO7g4qNWVyMiZaD2fHTxl-R08uUZkfVubtFMRr8I_-Vbga8s5eiCz7IEk1d4rE-R_FZmqInVGIi6MouYlzoJ1Hp4Rjr79CvrbFOIrXvDtIeB7uQH8RH6iNr6kdBfiTvhnJQ3gqPmkgTBIiK6z_iSejrB8RWjfBHR8-vVmzkRT&cce=2&category=acrcp_v1_32&sig=AOD64_2QxeBoqtlYzn-4EV3n2FDi8rA0lg&q&nis=4&adurl&ved=2ahUKEwie4-bPiMmXAxW4W0EAHTQ2JAMQ0Qx6BAgbEAE","Chabot","AI for Personal Use"],
+["Explain XKCD","https://www.explainxkcd.com","Read","Decode the jokes in every xkcd comic."],
+["Google Flow","https://flow.google.com/","Create","• Google's creative studio for generating cinematic video and custom images."],
+["WisPaper","https://www.google.com/aclk?sa=L&pf=1&ai=DChsSEwiG_-3PiMmXAxVEo1AGHXpGPEcYACICCAEQABoCZGc&co=1&ase=2&gclid=CjwKCAjwotzWBhBFEiwA1JhPoGaJ3PZV4EO1c7qY5c5MgyQkyNOFnDG3Y9mPrBAG2fq1dd5x-EQBGhoCDhYQAvD_BwE&cid=CAASuwHkaL1rTaKE6yfuBopxnK3QS158o6iPQdliBOCt6bgXtVdA4Ja7O6Gr8tR3ZxA5j6cU8QLdJNDpBrOTB-GoO7g4qNWVyMiZaD2fHTxl-R08uUZkfVubtFMRr8I_-Vbga8s5eiCz7IEk1d4rE-R_FZmqInVGIi6MouYlzoJ1Hp4Rjr79CvrbFOIrXvDtIeB7uQH8RH6iNr6kdBfiTvhnJQ3gqPmkgTBIiK6z_iSejrB8RWjfBHR8-vVmzkRT&cce=2&category=acrcp_v1_32&sig=AOD64_3Ua5L7MCOGVSyPOGA78E9C1zJMIA&q&nis=4&adurl=https://www.wispaper.ai/en?utm_source%3Dgoogle%26utm_medium%3Dcpc%26utm_campaign%3D23775994762%26utm_term%3Dartificial%2520research%26utm_content%3D201363388688%26gad_source%3D1%26gad_campaignid%3D23775994762%26gbraid%3D0AAAABB4PZZ_FQJ6AAyAMoDXwei7j8cDeJ%26gclid%3DCjwKCAjwotzWBhBFEiwA1JhPoGaJ3PZV4EO1c7qY5c5MgyQkyNOFnDG3Y9mPrBAG2fq1dd5x-EQBGhoCDhYQAvD_BwE&ved=2ahUKEwie4-bPiMmXAxW4W0EAHTQ2JAMQ0Qx6BAgcEAE","inquire","Free Ai academic Research "],
+["Project Gutenberg","https://www.gutenberg.org","Read","Over 70,000 free ebooks."],
+["Earth Nullschool","https://earth.nullschool.net","Explore","Planetary winds and ocean currents, live."],
+["Archive.org","https://archive.org","Learn","Books, music, video and the Wayback Machine."],
+["Art Institute of Chicago","https://www.artic.edu/collection","Art","Browse a huge open art collection."],
+["Pointer Pointer","https://pointerpointer.com","Play","Move your cursor, and someone points back."],
+["Geoguessr","https://www.geoguessr.com","Play","Guess where you are in the world."],
+["Khan Academy","https://www.khanacademy.org","Learn","Free lessons in nearly any subject."],
+["Atlas Obscura","https://www.atlasobscura.com","Explore","Hidden wonders and strange places."],
+["Quanta Magazine","https://www.quantamagazine.org","Read","Clear writing on math and science."],
+["Internet Archive Games","https://archive.org/details/softwarelibrary_msdos_games","Play","Thousands of classic DOS games in your browser."],
+["Wikimedia Commons","https://commons.wikimedia.org/wiki/Special:Random","Art","A random freely licensed image or file."],
+["Open Library","https://openlibrary.org","Read","Borrow or browse millions of books."],
+["NASA Image Library","https://images.nasa.gov","Explore","Space photos, audio and video."],
+["Musicmap","https://www.musicmap.info","Music","The genealogy of every major music genre."],
+["Ciechanowski","https://ciechanow.ski","Learn","Gorgeous interactive explainers of how things work."],
+["Cat Bounce","https://cat-bounce.com","Play","Exactly what it sounds like."],
+["Zoom Earth","https://zoom.earth","Explore","Live satellite imagery and storm tracking."],
+["Teuton Fonts","https://fonts.google.com","Art","Browse thousands of open-source typefaces."],
+["Internet Map of Poems","https://poets.org","Read","Poems and poets from around the world."],
+["Excalidraw","https://excalidraw.com","Make","Sketch diagrams with a hand-drawn look."],
+["Photopea","https://www.photopea.com","Make","A full image editor in your browser."],
+["Chrome Music Lab","https://musiclab.chromeexperiments.com","Music","Playful ways to explore how music works."]
+];
+const cats=["All",...new Set(SITES.map(s=>s[2]))];
+let cat="All",hist=[],last=-1,cur=null;
+const $=id=>document.getElementById(id);
+function draw(){ $("filters").innerHTML=""; cats.forEach(c=>{const b=document.createElement("button");b.textContent=c;b.className="alt chip"+(c===cat?" on":"");b.onclick=()=>{cat=c;draw()};$("filters").appendChild(b)}) }
+function pick(){
+  const pool=SITES.map((s,i)=>i).filter(i=>(cat==="All"||SITES[i][2]===cat)&&i!==last);
+  if(!pool.length)return;
+  last=pool[Math.floor(Math.random()*pool.length)];
+  const [name,url,tag,desc]=SITES[last]; cur=url;
+  $("url").textContent=url.replace(/^https?:\/\//,"");
+  $("card").innerHTML="";
+  const t=document.createElement("span");t.className="tag";t.textContent=tag;
+  const h=document.createElement("h2");h.textContent=name;
+  const p=document.createElement("p");p.textContent=desc;
+  const r=document.createElement("div");r.className="row";
+  const a=document.createElement("a");a.className="btn";a.href=url;a.target="_blank";a.rel="noopener noreferrer";a.textContent="Visit site ↗";
+  a.onclick=()=>{hist=[last,...hist.filter(x=>x!==last)].slice(0,8);renderHist()};
+  const n=document.createElement("button");n.className="alt";n.textContent="Another";n.onclick=pick;
+  r.append(a,n);$("card").append(t,h,p,r);
+}
+function renderHist(){
+  const ul=$("hist");ul.innerHTML="";
+  hist.forEach(i=>{const li=document.createElement("li");const a=document.createElement("a");a.href=SITES[i][1];a.target="_blank";a.rel="noopener noreferrer";
+    const s=document.createElement("span");s.textContent=SITES[i][0];const m=document.createElement("small");m.textContent=SITES[i][2];a.append(s,m);li.appendChild(a);ul.appendChild(li)});
+}
+$("go").onclick=pick;
+draw();
+</script>
+</body>
+</html>
